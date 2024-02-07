@@ -31,7 +31,7 @@ RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 FROM system-deps AS python-setup
-RUN git clone -b v$PYENV_VERSION --single-branch --depth 1 https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
+RUN git clone -b v${PYENV_VERSION} --single-branch --depth 1 https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
     pyenv install ${PYTHON_VERSION} && \
     pyenv global ${PYTHON_VERSION} && \
     find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rf '{}' + && \
