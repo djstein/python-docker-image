@@ -16,7 +16,7 @@ ENV \
     POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_IN_PROJECT=false \
     POETRY_VIRTUALENVS_CREATE=false \
-    PYENV_VERSION=2.3.35 \
+    # PYENV_VERSION=2.3.35 \ using this causes the build to fail on pip install poetry!
     POETRY_VERSION=1.7.1 \
     PYTHON_VERSION=3.12.1
 
@@ -24,14 +24,17 @@ FROM base AS system-deps
 RUN cp /etc/apt/sources.list /etc/apt/sources.list~ && \
     sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
     apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+    build-essential gdb lcov pkg-config \
+      libbz2-dev libffi-dev libgdbm-dev libgdbm-compat-dev liblzma-dev \
+      libncurses5-dev libreadline6-dev libsqlite3-dev libssl-dev \
+      lzma lzma-dev tk-dev uuid-dev zlib1g-dev \
     ca-certificates \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 FROM system-deps AS python-setup
-RUN git clone -b v${PYENV_VERSION} --single-branch --depth 1 https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
+RUN git clone -b v2.3.35 --single-branch --depth 1 https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
     pyenv install ${PYTHON_VERSION} && \
     pyenv global ${PYTHON_VERSION} && \
     find $PYENV_ROOT/versions -type d '(' -name '__pycache__' -o -name 'test' -o -name 'tests' ')' -exec rm -rf '{}' + && \
